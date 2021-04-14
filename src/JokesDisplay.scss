@@ -1,3 +1,11 @@
-.JokesDisplay {
+.JokesList {
   text-align: center;
+
+  &__jokes {
+    padding: 1rem;
+  }
+}
+
+.Joke {
+  padding: .2rem;
 }
