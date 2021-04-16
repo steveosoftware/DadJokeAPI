@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
-import './JokesDisplay.scss';
+import './Joke.scss';
+
 
 class Joke extends Component {
-  constructor(props){
-    super(props);
-    this.state = { vote: 0 }
-    this.vote = this.vote.bind(this);
-  }
 
-
-  vote(){
-    this.setState(st => ({ vote: st.vote + 1 }))
-  }
 
   render(){
     return (
       <div className="Joke">
-        <button onClick={this.vote}>{this.state.vote}</button>
-        {this.props.joke}
+        <div className="Joke__buttons">
+        <i onClick={this.props.upvote} className="fas fa-arrow-up"></i>
+        <span className="Joke__votes">{this.props.votes}</span>
+        <i onClick={this.props.downvote} className="fas fa-arrow-down"></i>
+        </div>
+
+      <div className="Joke__text">
+      {this.props.text}
+      </div>
+
       </div>
     )
   }
