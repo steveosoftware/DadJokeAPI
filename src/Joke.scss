@@ -38,10 +38,76 @@
     border-radius: 50%;
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0,0,0,0.1)
   }
+  &__Smiley:hover {
+    animation: spin;
+    animation-duration: .7s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 0;
+  }
+}
+
+@keyframes spin{
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(25deg);
+  }
+  30% {
+    transform: rotate(0deg);
+  }
+  45% {
+    transform: rotate(15deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+  80%{
+    transform: rotate(10deg);
+  }
+  100%{
+    transform: rotate(0deg);
+  }
 }
 
 .fa-arrow-up, .fa-arrow-down {
   font-size: 1.5em;
   margin: 1rem;
   cursor: pointer;
+  transition: all .2s;
+}
+
+.fa-arrow-up:hover{
+  animation-name: move-up;
+  animation-duration: .7s;
+  animation-timing-function: ease-out;
+  color:#4CAF50;
+}
+@keyframes move-up {
+  0%,
+  50%,
+  100% {
+    transform: translateY(0);
+  }
+  25%,
+  75% {
+    transform: translateY(-3px);
+  }
+}
+.fa-arrow-down:hover {
+  animation-name: move-down;
+  animation-duration: 0.7s;
+  animation-timing-function: ease-out;
+  color: #f44336;
+}
+@keyframes move-down {
+  0%,
+  50%,
+  100% {
+    transform: translateY(0);
+  }
+  25%,
+  75% {
+    transform: translateY(3px);
+  }
 }
