@@ -13,19 +13,44 @@ class JokeList extends Component {
 
   constructor(props){
     super(props);
-    this.state = { fetchedJokes: [] }
+    this.state = {
+      fetchedJokes: JSON.parse(window.localStorage.getItem("jokes")|| "[]"),
+      loading: false
+   };
+    this.seenJokes = new Set(this.state.fetchedJokes.map(j => j.text));
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  async componentDidMount(){
+ componentDidMount(){
+    if(this.state.fetchedJokes.length === 0) this.getJokes();
+  }
+
+async getJokes(){
+  try{
     let jokes = [];
     while(jokes.length < this.props.numberOfJokes){
       const header = {
         headers: {Accept: "application/json"}
       }
       const response = await axios.get(JOKES_API, header);
-      jokes.push({id: uuidv4(), text: response.data.joke, votes: 0})
+      let newJoke = response.data.joke;
+      if(!this.seenJokes.has(newJoke)){
+      jokes.push({id: uuidv4(), text: newJoke, votes: 0})
+    } else {
+      console.log("Found a duplicate");
+      console.log(newJoke);
     }
-    this.setState({ fetchedJokes: jokes })
+  }
+    this.setState(st => ({
+      loading: false,
+      fetchedJokes: [...st.fetchedJokes, ...jokes]
+    }),
+    () => window.localStorage.setItem("jokes", JSON.stringify(this.state.fetchedJokes))
+    );
+   } catch(e){
+     alert(e);
+     this.setState({loading: false});
+   }
   }
 
   handleVote(id, delta){
@@ -33,12 +58,26 @@ class JokeList extends Component {
       st=> ({
         fetchedJokes: st.fetchedJokes.map(j =>
           j.id === id? {...j, votes: j.votes + delta } : j)
-      })
+      }),
+      () => window.localStorage.setItem("jokes", JSON.stringify(this.state.fetchedJokes))
     )
   }
 
+  handleClick(){
+   this.setState({ loading: true }, this.getJokes);
+  }
+
   render(){
-    const jokes = this.state.fetchedJokes.map(j => (
+    if(this.state.loading){
+      return (
+        <div className="JokeList__spinner">
+          <i className="far fa-8x fa-laugh fa-spin" />
+          <h1>Loading...</h1>
+        </div>
+      )
+    }
+    let sortedJokes = this.state.fetchedJokes.sort((a,b) => b.votes - a.votes)
+    const jokes = sortedJokes.map(j => (
       <Joke
         text={j.text}
         votes={j.votes}
@@ -47,13 +86,15 @@ class JokeList extends Component {
         downvote={() => this.handleVote(j.id, -1)}/>
     ))
     return (
-      <div className="JokesList">
-        <div className="JokeList__sidebar">
-          <h1 className="JokeList__title"><span>Dad</span> Jokes</h1>
+      <div className="JokeList">
+        <div className="Sidebar">
+          <h1 className="Sidebar__title">
+            <span>Dad</span> Jokes
+          </h1>
           <img
-          className="JokeList__image"
+          className="Sidebar__image"
           src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg" alt="icon"/>
-          <button className="JokeList__getmore">New Jokes</button>
+          <button className="Sidebar__getmore" onClick={this.handleClick}>New Jokes</button>
         </div>
 
         <div className="JokeList__jokes">
