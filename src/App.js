@@ -1,10 +1,11 @@
 import React from 'react';
-import JokesDisplay from './JokesDisplay';
+import JokeList from './JokeList';
+import './App.scss';
 
 const App = () => {
   return (
-    <div>
-      <JokesDisplay />
+    <div className="App">
+      <JokeList />
     </div>
   )
 }
